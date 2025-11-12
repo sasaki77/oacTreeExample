@@ -1,0 +1,99 @@
+program sncVacuum
+
+double pressure;
+assign pressure to "{user}:VAC:PRES";
+monitor pressure;
+
+short RoughPump;
+assign RoughPump to "{user}:VAC:ROUGH";
+
+short CryoPump;
+assign CryoPump to "{user}:VAC:CRYO";
+
+short Valve;
+assign Valve to "{user}:VAC:VALVE";
+
+string CurrentState;
+assign CurrentState to "{user}:VAC:STAT";
+
+ss vacuum_control {
+  state init {
+    entry {
+      printf("Entry initial state\n");
+      strcpy(CurrentState,"Initial State");
+      pvPut(CurrentState);
+    }
+
+    when (pressure > .0000051) {
+      RoughPump = 1;
+      pvPut(RoughPump);
+      CryoPump = 0;
+      pvPut(CryoPump);
+      Valve = 0;
+      pvPut(Valve);
+    } state low_vacuum
+
+    when (pressure <= .0000049) {
+      RoughPump = 0;
+      pvPut(RoughPump);
+      CryoPump = 1;
+      pvPut(CryoPump);
+      Valve = 1;
+      pvPut(Valve);
+    } state high_vacuum
+  }
+
+  state high_vacuum {
+    entry {
+      printf("Entry high vacuum state\n");
+      strcpy(CurrentState,"High Vacuum State");
+      pvPut(CurrentState);
+    }
+
+    when (pressure > .0000051) {
+      RoughPump = 1;
+      pvPut(RoughPump);
+      CryoPump = 0;
+      pvPut(CryoPump);
+      Valve = 0;
+      pvPut(Valve);
+    } state low_vacuum
+  }
+
+  state low_vacuum {
+    entry {
+      printf("Entry low vacuum state\n");
+      strcpy(CurrentState,"Low Vacuum State");
+      pvPut(CurrentState);
+    }
+
+    when (pressure <= .0000049) {
+      RoughPump = 0;
+      pvPut(RoughPump);
+      CryoPump = 1;
+      pvPut(CryoPump);
+      Valve = 1;
+      pvPut(Valve);
+    } state high_vacuum
+
+    when (delay(20.0)) {
+      RoughPump = 0;
+      pvPut(RoughPump);
+      CryoPump = 0;
+      pvPut(CryoPump);
+      Valve = 0;
+      pvPut(Valve);
+    } state fault
+  }
+
+  state fault {
+    entry {
+      printf("Entry fault state\n");
+      strcpy(CurrentState,"Fault State");
+      pvPut(CurrentState);
+    }
+
+    when () {
+    } exit
+  }
+}

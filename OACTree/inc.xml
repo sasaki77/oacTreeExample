@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure>
+  <Plugin>liboac-tree-ca.so</Plugin>
+  <Sequence>
+    <WaitForVariables timeout="5.0" varType="ChannelAccessClient"/>
+    <Increment varName="pv1"/>
+  </Sequence>
+  <Workspace>
+    <ChannelAccessClient channel="TEST:LONGOUT" name="pv1" type='{"type":"int32"}'/>
+  </Workspace>
+</Procedure>
