@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure>
+  <Plugin>liboac-tree-ca.so</Plugin>
+  <Sequence>
+    <WaitForVariables timeout="5.0" varType="ChannelAccessClient" />
+    <Copy inputVar="one" outputVar="pv1" />
+    <Copy inputVar="two" outputVar="pv2" />
+    <Copy inputVar="three" outputVar="pv3" />
+  </Sequence>
+  <Workspace>
+    <Local name="one" type='{"type":"int32"}' value='1' />
+    <Local name="two" type='{"type":"int32"}' value='2' />
+    <Local name="three" type='{"type":"int32"}' value='3' />
+    <ChannelAccessClient channel="TEST:LONGOUT1" name="pv1" type='{"type":"int32"}' />
+    <ChannelAccessClient channel="TEST:LONGOUT2" name="pv2" type='{"type":"int32"}' />
+    <ChannelAccessClient channel="TEST:LONGOUT3" name="pv3" type='{"type":"int32"}' />
+  </Workspace>
+</Procedure>

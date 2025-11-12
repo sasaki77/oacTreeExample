@@ -1,2 +1,11 @@
 record(longout, "TEST:LONGOUT") {
 }
+
+record(longout, "TEST:LONGOUT1") {
+}
+
+record(longout, "TEST:LONGOUT2") {
+}
+
+record(longout, "TEST:LONGOUT3") {
+}
