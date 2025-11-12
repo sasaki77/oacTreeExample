@@ -8,7 +8,7 @@
       <Fallback>
         <Equals leftVar="state" rightVar="fault_vacuum_state" />
         <Sequence name="low_vacuum_seq">
-          <GreaterThan leftVar="pres" rightVar="low_thr"></GreaterThan>
+          <GreaterThan leftVar="pres" rightVar="low_thr" />
           <Sequence>
             <Inverter>
               <Equals leftVar="state" rightVar="low_vacuum_state" />
@@ -16,13 +16,13 @@
             <Include path="ToLowVacuum" />
           </Sequence>
           <ReactiveSequence>
-            <GreaterThan leftVar="pres" rightVar="low_thr"></GreaterThan>
+            <GreaterThan leftVar="pres" rightVar="low_thr" />
             <Wait timeout="10.0" />
             <Include path="ToFault" />
           </ReactiveSequence>
         </Sequence>
         <Sequence name="high_vacuum_seq">
-          <LessThanOrEqual leftVar="pres" rightVar="high_thr"></LessThanOrEqual>
+          <LessThanOrEqual leftVar="pres" rightVar="high_thr" />
           <Inverter>
             <Equals leftVar="state" rightVar="high_vacuum_state" />
           </Inverter>
