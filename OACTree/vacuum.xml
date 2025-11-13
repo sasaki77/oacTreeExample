@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Procedure>
+<Procedure name="vacuum">
   <Plugin>liboac-tree-ca.so</Plugin>
   <Sequence isRoot="True">
     <WaitForVariables varType="ChannelAccessClient" timeout="5.0" />
