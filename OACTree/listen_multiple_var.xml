@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure name="copy">
+    <Plugin>liboac-tree-ca.so</Plugin>
+    <Listen isRoot="true" varNames="pv1,pv2" forceSuccess="true">
+        <Sequence>
+            <Equals leftVar="pv1" rightVar="pv2" />
+            <Message text="Equals!!" />
+        </Sequence>
+    </Listen>
+    <Workspace>
+        <ChannelAccessClient channel="TEST:LONGOUT1" name="pv1" type='{"type":"int32"}' />
+        <ChannelAccessClient channel="TEST:LONGOUT2" name="pv2" type='{"type":"int32"}' />
+    </Workspace>
+</Procedure>
