@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Procedure name="vacuum">
+  <Plugin>liboac-tree-ca.so</Plugin>
+  <Listen varNames="pres,rough,cryo,valve" blocking="true" isRoot="True">
+    <ReactiveSequence name="main sequence">
+      <WaitForVariables varType="ChannelAccessClient" timeout="5.0" />
+      <ReactiveFallback>
+        <ReactiveSequence name="is high vacuum?">
+          <LessThanOrEqual leftVar="pres" rightVar="high_thr" />
+          <Fallback>
+            <Include path="CheckHighVacuumSettings" />
+            <Include path="ToHighVacuum" />
+          </Fallback>
+        </ReactiveSequence>
+        <ReactiveFallback>
+          <ReactiveSequence name="is low vacuum?">
+            <GreaterThan leftVar="pres" rightVar="low_thr" />
+            <Fallback>
+              <Include path="CheckLowVacuumSettings" />
+              <Include path="ToLowVacuum" />
+            </Fallback>
+            <Sequence>
+              <Wait timeout="5.0" />
+              <Include path="ToFault" />
+              <Fail />
+            </Sequence>
+          </ReactiveSequence>
+          <Inverter>
+            <Include path="CheckFaultSettings" />
+          </Inverter>
+        </ReactiveFallback>
+      </ReactiveFallback>
+    </ReactiveSequence>
+  </Listen>
+  <Sequence name="ToInitialState">
+    <Copy inputVar="str_init_state" outputVar="stat" />
+  </Sequence>
+  <Sequence name="CheckHighVacuumSettings">
+    <Equals leftVar="rough" rightVar="off" />
+    <Equals leftVar="cryo" rightVar="on" />
+    <Equals leftVar="valve" rightVar="open" />
+    <Equals leftVar="stat" rightVar="str_high_state" />
+  </Sequence>
+  <Sequence name="ToHighVacuum">
+    <Copy inputVar="off" outputVar="rough" />
+    <Copy inputVar="on" outputVar="cryo" />
+    <Copy inputVar="open" outputVar="valve" />
+    <Copy inputVar="str_high_state" outputVar="stat" />
+  </Sequence>
+  <Sequence name="CheckLowVacuumSettings">
+    <Equals leftVar="rough" rightVar="on" />
+    <Equals leftVar="cryo" rightVar="off" />
+    <Equals leftVar="valve" rightVar="close" />
+    <Equals leftVar="stat" rightVar="str_low_state" />
+  </Sequence>
+  <Sequence name="ToLowVacuum">
+    <Copy inputVar="on" outputVar="rough" />
+    <Copy inputVar="off" outputVar="cryo" />
+    <Copy inputVar="close" outputVar="valve" />
+    <Copy inputVar="str_low_state" outputVar="stat" />
+  </Sequence>
+  <Sequence name="CheckFaultSettings">
+    <Equals leftVar="rough" rightVar="off" />
+    <Equals leftVar="cryo" rightVar="off" />
+    <Equals leftVar="valve" rightVar="close" />
+    <Equals leftVar="stat" rightVar="str_fault_state" />
+  </Sequence>
+  <Sequence name="ToFault">
+    <Copy inputVar="off" outputVar="rough" />
+    <Copy inputVar="off" outputVar="cryo" />
+    <Copy inputVar="close" outputVar="valve" />
+    <Copy inputVar="str_fault_state" outputVar="stat" />
+  </Sequence>
+  <Workspace>
+    <Local name="open" type='{"type":"bool"}' value='true' />
+    <Local name="close" type='{"type":"bool"}' value='false' />
+    <Local name="on" type='{"type":"bool"}' value='true' />
+    <Local name="off" type='{"type":"bool"}' value='false' />
+    <Local name="low_thr" type='{"type":"float64"}' value='0.0000051' />
+    <Local name="high_thr" type='{"type":"float64"}' value='0.0000049' />
+    <Local name="str_high_state" type='{"type":"string"}' value='"High Vacuum State"' />
+    <Local name="str_low_state" type='{"type":"string"}' value='"Low Vacuum State"' />
+    <Local name="str_fault_state" type='{"type":"string"}' value='"Fault State"' />
+    <ChannelAccessClient channel="ET_SASAKI:VAC:PRES" name="pres" type='{"type":"float64"}' />
+    <ChannelAccessClient channel="ET_SASAKI:VAC:CRYO" name="cryo" type='{"type":"bool"}' />
+    <ChannelAccessClient channel="ET_SASAKI:VAC:ROUGH" name="rough" type='{"type":"bool"}' />
+    <ChannelAccessClient channel="ET_SASAKI:VAC:VALVE" name="valve" type='{"type":"bool"}' />
+    <ChannelAccessClient channel="ET_SASAKI:VAC:STAT" name="stat" type='{"type":"string"}' />
+  </Workspace>
+</Procedure>
